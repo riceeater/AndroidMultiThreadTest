@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,11 +64,19 @@ public class MainActivity extends AppCompatActivity {
         tvProgressValue = findViewById(R.id.tv_progress_value);
 
         progressBar.setProgress(progress);
+        progressBar.setSecondaryProgress(progress);
         tvProgressValue.setText("第一进度条:0%  第二进度条:0%");
         progressBar.setMax(MAX_PROGRESS);
     }
 
     protected void testDownLoad(View view) {
+        if(downloadThread != null) {
+            Toast.makeText(this,"下载任务已经启动！",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //初始化
+        progressBar.setProgress(0);
+        progressBar.setSecondaryProgress(0);
         //创建子线程
         downloadThread = new Thread(new Runnable() {
             @Override
