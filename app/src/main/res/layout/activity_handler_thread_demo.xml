@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+    <Button
+        android:text="模拟获取推送消息"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="getPushMessage"
+        />
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+    <TextView
+        android:id="@+id/tv_progress_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="进度:"
+        android:textSize="16sp"/>
+</LinearLayout>

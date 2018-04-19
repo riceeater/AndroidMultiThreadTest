@@ -30,4 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void asyncTaskDemo(View view) {
         AsyncTaskDemoActivity.start(this);
     }
+
+    protected void handlerThreadDemo(View view) {
+        HandlerThreadDemoActivity.start(this);
+    }
 }
