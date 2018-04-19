@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -50,7 +51,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity {
     public static final int DOWN_LOAD_TASK = 1001;//开启下载任务
     public static final int UPDATE_PROGRESS = 1002;//更新进度条
     public static final int PROGRESS_MAX_VALUE = 10000;
-    private String downloadUrl = "http://www.riceeater.info/uploads/shadowsocks--universal-4.5.1.apk";
+    private String downloadUrl = "http://www.riceeater.info/uploads/PureWeather_v6.0.7.apk";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -196,6 +197,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity {
     }
 
     static class DownLoadHandler extends Handler {
+        //这里使用弱引用，防止内存泄漏
         private WeakReference<HandlerThreadDemoActivity> activityWeakReference;
         public DownLoadHandler(Looper looper,WeakReference<HandlerThreadDemoActivity> activityWeakReference) {
             super(looper);
@@ -231,8 +233,15 @@ public class HandlerThreadDemoActivity extends AppCompatActivity {
                 if (fileSize <= 0) throw new RuntimeException("无法获知文件大小 ");
                 if (is == null) throw new RuntimeException("stream is null");
                 File file = new File(path+"/"+filename);
-                if(!file.exists()){
-                    file.mkdirs();
+                if (file.exists()){
+                    file.delete();
+                }
+                try {
+                    //创建文件
+                    file.createNewFile();
+                    //给一个吐司提示，显示创建成功
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 //把数据存入路径+文件名
                 FileOutputStream fos = new FileOutputStream(file);
