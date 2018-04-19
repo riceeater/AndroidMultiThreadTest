@@ -136,7 +136,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Uri contentUri = FileProvider.getUriForFile(
                     this
-                    , "com.github.shadowsocks.fileprovider"
+                    , "com.xylitolz.androidmultithreadtest.fileprovider"
                     , apkFile);
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {
