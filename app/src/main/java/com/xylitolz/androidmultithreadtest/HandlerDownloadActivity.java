@@ -18,32 +18,11 @@ import android.widget.Toast;
  * @date 2018-04-17 14:12
  */
 
-public class HandlerDownloadActivity extends AppCompatActivity {
+public class HandlerDownloadActivity extends AppCompatActivity implements View.OnClickListener {
     /**
      * 第一步，主线程中创建Handler并在handleMessage方法中处理相应逻辑
      */
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            //这里完成更新UI的操作
-            if(msg != null && msg.what == MESSAGE_WHAT_UPDATE_PROGRESS) {
-                int progress = (int) msg.obj;
-                String value = "";
-                if(progress <= MAX_PROGRESS) {
-                    progressBar.setProgress(progress);
-                    value += "第一进度条:"+progress+"%";
-                }
-                if(progress*2 <= MAX_PROGRESS) {
-                    progressBar.setSecondaryProgress(progress*2);
-                    value += " 第二进度条:"+progress*2+"%";
-                } else {
-                    value += " 第二进度条:"+MAX_PROGRESS+"%";
-                }
-                tvProgressValue.setText(value);
-            }
-        }
-    };
+    private Handler handler = new Handler();
     /**
      * 执行下载操作的线程
      */
@@ -62,7 +41,7 @@ public class HandlerDownloadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_handler_download);
-
+        findViewById(R.id.btn_download).setOnClickListener(this);
         progressBar = findViewById(R.id.progress_bar);
         tvProgressValue = findViewById(R.id.tv_progress_value);
 
@@ -72,7 +51,7 @@ public class HandlerDownloadActivity extends AppCompatActivity {
         progressBar.setMax(MAX_PROGRESS);
     }
 
-    protected void testDownLoad(View view) {
+    public void onClick(View view) {
         if(downloadThread != null) {
             Toast.makeText(this,"下载任务已经启动！",Toast.LENGTH_SHORT).show();
             return;
@@ -94,10 +73,23 @@ public class HandlerDownloadActivity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        Message message = Message.obtain();
-                        message.what = MESSAGE_WHAT_UPDATE_PROGRESS;
-                        message.obj = progress;
-                        handler.sendMessage(message);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                String value = "";
+                                if(progress <= MAX_PROGRESS) {
+                                    progressBar.setProgress(progress);
+                                    value += "第一进度条:"+progress+"%";
+                                }
+                                if(progress*2 <= MAX_PROGRESS) {
+                                    progressBar.setSecondaryProgress(progress*2);
+                                    value += " 第二进度条:"+progress*2+"%";
+                                } else {
+                                    value += " 第二进度条:"+MAX_PROGRESS+"%";
+                                }
+                                tvProgressValue.setText(value);
+                            }
+                        });
                     }
                 }
             }

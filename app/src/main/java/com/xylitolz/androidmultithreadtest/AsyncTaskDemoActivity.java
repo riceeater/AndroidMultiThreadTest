@@ -32,7 +32,7 @@ import java.util.List;
  * @date 2018-04-17 14:26
  */
 
-public class AsyncTaskDemoActivity extends AppCompatActivity{
+public class AsyncTaskDemoActivity extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * 这里定义AsyncTask切记不要使用多态，不然会报错，因为不能正确识别三个泛型参数
@@ -51,12 +51,13 @@ public class AsyncTaskDemoActivity extends AppCompatActivity{
     }
 
     private void init() {
+        findViewById(R.id.btn_load).setOnClickListener(this);
         ivContainer = findViewById(R.id.iv_container);
         pbLoading = findViewById(R.id.pb_loading);
 
     }
 
-    protected void loadImage(View view) {
+    public void onClick(View view) {
         asyncTask = new DownloadImageTask();
         asyncTask.execute(IMAGE_URL);//可以接受多个参数
     }

@@ -5,10 +5,10 @@
               android:layout_height="match_parent"
     android:gravity="center_horizontal">
     <Button
+        android:id="@+id/btn_get_msg"
         android:text="模拟获取推送消息"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="getPushMessage"
         />
     <ProgressBar
         android:id="@+id/pb_loading"

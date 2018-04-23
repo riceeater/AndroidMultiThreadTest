@@ -39,7 +39,7 @@ import java.net.URLConnection;
  * @date 2018-04-19 11:34
  */
 
-public class HandlerThreadDemoActivity extends AppCompatActivity {
+public class HandlerThreadDemoActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tvProgressValue;
     private ProgressBar pbLoading;
@@ -67,6 +67,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity {
 
         tvProgressValue = findViewById(R.id.tv_progress_value);
         pbLoading = findViewById(R.id.pb_loading);
+        findViewById(R.id.btn_get_msg).setOnClickListener(this);
 
         pbLoading.setMax(PROGRESS_MAX_VALUE);
         updateProgress(0);
@@ -87,7 +88,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity {
      * Button点击事件，模拟收到推送消息，开始下载
      * @param view
      */
-    protected void getPushMessage(View view) {
+    public void onClick(View view) {
         //模拟收到推送消息，请求下载
         Message message = Message.obtain();
         message.what = DOWN_LOAD_TASK;

@@ -25,6 +25,9 @@
         <activity android:name=".AsyncTaskDemoActivity"/>
         <activity android:name=".HandlerDownloadActivity"/>
         <activity android:name=".HandlerThreadDemoActivity"/>
+        <activity android:name=".IntentServiceDemoActivity"/>
+
+        <service android:name=".DownLoadIntentService"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

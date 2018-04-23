@@ -5,21 +5,27 @@
               android:orientation="vertical"
     android:gravity="center">
     <Button
+        android:id="@+id/btn_handler_demo"
         android:textAllCaps="false"
-        android:onClick="handlerDemo"
         android:text="Handler使用演示"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <Button
+        android:id="@+id/btn_async_task_demo"
         android:textAllCaps="false"
-        android:onClick="asyncTaskDemo"
         android:text="AsyncTask使用演示"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <Button
+        android:id="@+id/btn_handler_thread_demo"
         android:textAllCaps="false"
-        android:onClick="handlerThreadDemo"
         android:text="HandlerThread使用演示"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/btn_intent_service_demo"
+        android:textAllCaps="false"
+        android:text="IntentService使用演示"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </LinearLayout>
