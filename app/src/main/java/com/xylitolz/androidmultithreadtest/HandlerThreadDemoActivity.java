@@ -54,7 +54,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
     public static final int DOWN_LOAD_TASK = 1001;//开启下载任务
     public static final int UPDATE_PROGRESS = 1002;//更新进度条
     public static final int PROGRESS_MAX_VALUE = 10000;
-    private String downloadUrl = "https://riceeater.oss-cn-qingdao.aliyuncs.com/blog/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87-%E7%BE%8E%E5%A5%B31.png";
+    private String downloadUrl = "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1350208957,3139823434&fm=15&gp=0.jpg";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

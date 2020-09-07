@@ -33,7 +33,7 @@ public class AsyncTaskDemoActivity extends AppCompatActivity implements View.OnC
     private DownloadImageTask asyncTask;
     private ImageView ivContainer;
     private ProgressBar pbLoading;
-    public static String IMAGE_URL = "https://riceeater.oss-cn-qingdao.aliyuncs.com/blog/%E8%8B%A6%E9%85%92.jpg";
+    public static String IMAGE_URL = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1184119840,1109593844&fm=26&gp=0.jpg";
 
 
     @Override
