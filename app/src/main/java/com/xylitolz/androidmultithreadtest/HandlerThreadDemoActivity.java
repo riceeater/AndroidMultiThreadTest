@@ -1,10 +1,11 @@
 package com.xylitolz.androidmultithreadtest;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,15 +45,16 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
 
     private TextView tvProgressValue;
     private ProgressBar pbLoading;
+    private ImageView ivPic;
 
-    private Handler workerHandler,mainHandler;//工作线程绑定的Handler和主线程Handler
+    private Handler workerHandler, mainHandler;//工作线程绑定的Handler和主线程Handler
     private HandlerThread workerThread;//工作线程
     public boolean isRunning = true;//Activity运行状态
 
     public static final int DOWN_LOAD_TASK = 1001;//开启下载任务
     public static final int UPDATE_PROGRESS = 1002;//更新进度条
     public static final int PROGRESS_MAX_VALUE = 10000;
-    private String downloadUrl = "http://www.riceeater.info/uploads/PureWeather_v6.0.7.apk";
+    private String downloadUrl = "https://riceeater.oss-cn-qingdao.aliyuncs.com/blog/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87-%E7%BE%8E%E5%A5%B31.png";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
 
         tvProgressValue = findViewById(R.id.tv_progress_value);
         pbLoading = findViewById(R.id.pb_loading);
+        ivPic = findViewById(R.id.iv_pic);
         findViewById(R.id.btn_get_msg).setOnClickListener(this);
 
         pbLoading.setMax(PROGRESS_MAX_VALUE);
@@ -79,13 +83,14 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
         //启动工作线程
         workerThread.start();
         //初始化工作线程handler,传入Looper实现与工作线程的绑定
-        workerHandler = new DownLoadHandler(workerThread.getLooper(),new WeakReference<HandlerThreadDemoActivity>(this));
+        workerHandler = new DownLoadHandler(workerThread.getLooper(), new WeakReference<HandlerThreadDemoActivity>(this));
         //初始化主线程
         mainHandler = new MainHandler(new WeakReference<HandlerThreadDemoActivity>(this));
     }
 
     /**
      * Button点击事件，模拟收到推送消息，开始下载
+     *
      * @param view
      */
     public void onClick(View view) {
@@ -100,33 +105,38 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
 
     /**
      * 发送更新进度条消息，在子线程中执行
+     *
      * @param message 消息体
      */
     public void sendProgressMessage(Message message) {
-        Log.e("THREAD", "sendProgressMessage"+Thread.currentThread().getId()+"");
+        Log.e("THREAD", "sendProgressMessage" + Thread.currentThread().getId() + "");
         mainHandler.sendMessage(message);//子线程将消息发给主线程
     }
 
     /**
      * 更新UI操作，主线程进行
+     *
      * @param percent
      */
     public void updateProgress(float percent) {
-        updateProgress(percent,null);
+        updateProgress(percent, null);
     }
 
-    public void updateProgress(float percent,String filePath) {
-        Log.e("THREAD", "updateProgress"+Thread.currentThread().getId()+"");
-        tvProgressValue.setText("当前进度:"+String.format("%.2f%%",percent * 100));
+    public void updateProgress(float percent, String filePath) {
+        Log.e("THREAD", "updateProgress" + Thread.currentThread().getId() + "");
+        tvProgressValue.setText("当前进度:" + String.format("%.2f%%", percent * 100));
         pbLoading.setProgress((int) (percent * PROGRESS_MAX_VALUE));
-        if(percent == 1) {
-            Toast.makeText(this,"下载完成",Toast.LENGTH_SHORT).show();
-            install(filePath);
+        if (percent == 1) {
+            Toast.makeText(this, "下载完成", Toast.LENGTH_SHORT).show();
+//            install(filePath);如果是安装APK
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            ivPic.setImageBitmap(bitmap);
         }
     }
 
     /**
      * 安装应用
+     *
      * @param filePath
      */
     public void install(String filePath) {
@@ -141,7 +151,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
                     , apkFile);
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {
-            Log.e("THREAD", "URI"+apkFile.getAbsolutePath());
+            Log.e("THREAD", "URI" + apkFile.getAbsolutePath());
             intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
         }
         startActivity(intent);
@@ -150,24 +160,24 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
     @Override
     protected void onDestroy() {
         isRunning = false;//设置运行状态为false
-        if(workerThread != null) {
+        if (workerThread != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 workerThread.quitSafely();//线程安全
             } else {
                 workerThread.quit();//非线程安全
             }
         }
-        if(workerHandler != null) {
+        if (workerHandler != null) {
             workerHandler.removeCallbacksAndMessages(null);
         }
-        if(mainHandler != null) {
+        if (mainHandler != null) {
             mainHandler.removeCallbacksAndMessages(null);
         }
         super.onDestroy();
     }
 
     public static void start(Context context) {
-        Intent intent = new Intent(context,HandlerThreadDemoActivity.class);
+        Intent intent = new Intent(context, HandlerThreadDemoActivity.class);
         context.startActivity(intent);
     }
 
@@ -182,16 +192,16 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.e("THREAD", "MainHandler handleMessage"+Thread.currentThread().getId()+"");
-            if(msg.what == UPDATE_PROGRESS) {
+            Log.e("THREAD", "MainHandler handleMessage" + Thread.currentThread().getId() + "");
+            if (msg.what == UPDATE_PROGRESS) {
                 //获取到更新进度条的消息
                 float percent = (float) msg.obj;
-                if(percent != 1) {
+                if (percent != 1) {
                     activityWeakReference.get().updateProgress(percent);
                 } else {
                     Bundle bundle = msg.getData();
                     String filePath = bundle.getString("file");
-                    activityWeakReference.get().updateProgress(percent,filePath);
+                    activityWeakReference.get().updateProgress(percent, filePath);
                 }
             }
         }
@@ -200,7 +210,8 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
     static class DownLoadHandler extends Handler {
         //这里使用弱引用，防止内存泄漏
         private WeakReference<HandlerThreadDemoActivity> activityWeakReference;
-        public DownLoadHandler(Looper looper,WeakReference<HandlerThreadDemoActivity> activityWeakReference) {
+
+        public DownLoadHandler(Looper looper, WeakReference<HandlerThreadDemoActivity> activityWeakReference) {
             super(looper);
             this.activityWeakReference = activityWeakReference;
         }
@@ -208,23 +219,23 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.e("THREAD", "DownLoadHandler handleMessage"+Thread.currentThread().getId()+"");
-            if(msg.what == DOWN_LOAD_TASK) {
+            Log.e("THREAD", "DownLoadHandler handleMessage" + Thread.currentThread().getId() + "");
+            if (msg.what == DOWN_LOAD_TASK) {
                 //判断收到消息为要求下载
                 String url = (String) msg.obj;
-                if( !TextUtils.isEmpty(url)) {
+                if (!TextUtils.isEmpty(url)) {
                     download(url);
                 }
             }
         }
 
         private void download(String url) {
-            try{
+            try {
                 //下载路径
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
                 //文件名
-                String filename=url.substring(url.lastIndexOf("/") + 1);
+                String filename = url.substring(url.lastIndexOf("/") + 1);
                 //获取文件名
                 URL myURL = new URL(url);
                 URLConnection conn = myURL.openConnection();
@@ -233,8 +244,8 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
                 int fileSize = conn.getContentLength();//根据响应获取文件大小
                 if (fileSize <= 0) throw new RuntimeException("无法获知文件大小 ");
                 if (is == null) throw new RuntimeException("stream is null");
-                File file = new File(path+"/"+filename);
-                if (file.exists()){
+                File file = new File(path + "/" + filename);
+                if (file.exists()) {
                     file.delete();
                 }
                 try {
@@ -249,7 +260,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
                 byte buf[] = new byte[1024];
                 int downLoadFileSize = 0;//记录已下载大小
                 int numRead = is.read(buf);
-                while(numRead != -1 && activityWeakReference.get().isRunning) {
+                while (numRead != -1 && activityWeakReference.get().isRunning) {
                     fos.write(buf, 0, numRead);
                     downLoadFileSize += numRead;
                     numRead = is.read(buf);
@@ -257,7 +268,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
                     float percent = downLoadFileSize / (fileSize * 1f);
                     Message message = Message.obtain();
                     message.what = UPDATE_PROGRESS;
-                    if(percent == 1) {
+                    if (percent == 1) {
                         Bundle bundle = new Bundle();
                         bundle.putString("file", file.getAbsolutePath());
                         message.setData(bundle);
@@ -277,7 +288,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE" };
+            "android.permission.WRITE_EXTERNAL_STORAGE"};
 
 
     public static void verifyStoragePermissions(Activity activity) {
@@ -288,7 +299,7 @@ public class HandlerThreadDemoActivity extends AppCompatActivity implements View
                     "android.permission.WRITE_EXTERNAL_STORAGE");
             if (permission != PackageManager.PERMISSION_GRANTED) {
                 // 没有写的权限，去申请写的权限，会弹出对话框
-                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();

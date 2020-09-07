@@ -33,19 +33,19 @@ public class IntentServiceDemoActivity extends AppCompatActivity implements View
         findViewById(R.id.btn_download).setOnClickListener(this);
         intentFilter = new IntentFilter(DownLoadIntentService.DOWNLOAD_FINISH);
         receiver = new DownLoadBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,intentFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter);
     }
 
     public void onClick(View view) {
-        Intent intent = new Intent(this,DownLoadIntentService.class);
+        Intent intent = new Intent(this, DownLoadIntentService.class);
         Bundle bundle = new Bundle();
-        bundle.putString("file_name","巴啦啦小魔仙.mp4");
+        bundle.putString("file_name", "巴啦啦小魔仙.mp4");
         intent.putExtras(bundle);
         startService(intent);
 
-        Intent intent2 = new Intent(this,DownLoadIntentService.class);
+        Intent intent2 = new Intent(this, DownLoadIntentService.class);
         Bundle bundle2 = new Bundle();
-        bundle2.putString("file_name","金刚葫芦娃.mp4");
+        bundle2.putString("file_name", "金刚葫芦娃.mp4");
         intent2.putExtras(bundle2);
         startService(intent2);
     }
@@ -57,7 +57,7 @@ public class IntentServiceDemoActivity extends AppCompatActivity implements View
     }
 
     public static void start(Context context) {
-        Intent intent = new Intent(context,IntentServiceDemoActivity.class);
+        Intent intent = new Intent(context, IntentServiceDemoActivity.class);
         context.startActivity(intent);
     }
 
@@ -65,13 +65,13 @@ public class IntentServiceDemoActivity extends AppCompatActivity implements View
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(TextUtils.equals(intent.getAction(),DownLoadIntentService.DOWNLOAD_FINISH)) {
+            if (TextUtils.equals(intent.getAction(), DownLoadIntentService.DOWNLOAD_FINISH)) {
                 Bundle bundle = intent.getExtras();
                 String fileName = bundle.getString("file_name");
                 String result = tvResult.getText().toString();
-                result += "名为"+fileName+"的文件下载完成！\n";
+                result += "名为" + fileName + "的文件下载完成！\n";
                 tvResult.setText(result);
-                Toast.makeText(IntentServiceDemoActivity.this,"下载完成，当前下载文件名"+fileName,Toast.LENGTH_SHORT).show();
+                Toast.makeText(IntentServiceDemoActivity.this, "下载完成，当前下载文件名" + fileName, Toast.LENGTH_SHORT).show();
             }
         }
     }

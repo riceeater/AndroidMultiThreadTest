@@ -8,22 +8,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.HttpURLConnection;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author 小米Xylitol
@@ -40,7 +33,7 @@ public class AsyncTaskDemoActivity extends AppCompatActivity implements View.OnC
     private DownloadImageTask asyncTask;
     private ImageView ivContainer;
     private ProgressBar pbLoading;
-    public static String IMAGE_URL = "http://p6z0jdp7l.bkt.clouddn.com/avatar.jpg";
+    public static String IMAGE_URL = "https://riceeater.oss-cn-qingdao.aliyuncs.com/blog/%E8%8B%A6%E9%85%92.jpg";
 
 
     @Override
@@ -68,11 +61,11 @@ public class AsyncTaskDemoActivity extends AppCompatActivity implements View.OnC
     }
 
     public static void start(Context context) {
-        Intent intent = new Intent(context,AsyncTaskDemoActivity.class);
+        Intent intent = new Intent(context, AsyncTaskDemoActivity.class);
         context.startActivity(intent);
     }
 
-    class DownloadImageTask extends AsyncTask<String,Void,Bitmap> {
+    class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
         /**
          * 主线程中执行，调用execute方法后立即执行
@@ -86,6 +79,7 @@ public class AsyncTaskDemoActivity extends AppCompatActivity implements View.OnC
 
         /**
          * 工作线程中执行，会在执行完onPreExecute后执行方法
+         *
          * @param strings 接受参数
          * @return 返回结果，传递给onPostExecute
          */
@@ -111,6 +105,7 @@ public class AsyncTaskDemoActivity extends AppCompatActivity implements View.OnC
 
         /**
          * 主线程执行，在手动调用publishProgress后被自动调用
+         *
          * @param values 异步任务进度
          */
         @Override
@@ -120,6 +115,7 @@ public class AsyncTaskDemoActivity extends AppCompatActivity implements View.OnC
 
         /**
          * 主线程执行，工作任务完成后调用该方法
+         *
          * @param bitmap 返回结果
          */
         @Override
